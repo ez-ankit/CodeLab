@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Editor from "@monaco-editor/react";
+"use client";
+
+import { useState, useCallback, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client"
 
@@ -8,30 +9,29 @@ import notify from "../../services/toast";
 import style from "./Editor.module.scss";
 import NavBar from "../NavBar/NavBar";
 
-const EditorLayout = () => {
+const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
+
+const EditorLayout = ({ roomId }) => {
   const socketRef = useMemo(
     () =>
-        io("https://beneficial-coherent-butterfly.glitch.me/", {
-            reconnectionAttempts: 2,
-        }),
+        io({ reconnectionAttempts: 2 }),
     [],
-)
-  const navigate = useNavigate();
+  )
   const [code, setCode] = useState("// here is your code...");
   const editorDidMount = useCallback((editor, monaco) => {
     editor.focus();
   }, []);
-  document.title = "Editor";
 
-  const { roomId } = useParams();
+  useEffect(() => {
+    document.title = "Editor";
+  }, []);
 
   const cookies = document.cookie;
-  let username = cookies ? cookies.split("; ").filter(cookie => cookie.includes("username"))[0].split("=")[1  ] : "Unkown User";
+  let username = cookies ? cookies.split("; ").filter(cookie => cookie.includes("username"))[0]?.split("=")[1] : "Unkown User";
 
   const handleErrors = (e) => {
     console.log("socket error", e);
     notify("Socket connection failed, try again later.");
-    navigate("/");
   };
 
   useEffect(() => {
@@ -39,8 +39,7 @@ const EditorLayout = () => {
     socketRef.on("connect_failed", (err) => handleErrors(err));
     socketRef.emit("JOIN", { roomId, username });
 
-    socketRef.on("JOINED", ({ code, clients }) => {
-      // console.log(clients);
+    socketRef.on("JOINED", ({ code }) => {
       setCode(code);
     });
 
@@ -74,12 +73,13 @@ const EditorLayout = () => {
       socketRef.emit("code change", { roomId, newCode: newValue });
     }
   };
+
   return (
     <>
       <NavBar />
 
       <div className={style.editor}>
-        <Editor
+        <MonacoEditor
           width="100%"
           height="calc(100vh - 70px)"
           language="javascript"

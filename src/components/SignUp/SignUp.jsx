@@ -1,17 +1,13 @@
-import React from "react";
+"use client";
+
 import axios from "axios";
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import "./SignUp.scss";
 
-const baseURL = "https://beneficial-coherent-butterfly.glitch.me/";
-// const baseURL = "http://localhost:8000";
-
 const SignUp = () => {
-  const [cookies, setCookie] = useCookies(["username"]);
-  const navigate = useNavigate();
-  document.title = "Register";
+  const router = useRouter();
 
   const passwordValidater = (password) => {
     const regex =
@@ -28,25 +24,24 @@ const SignUp = () => {
 
     if (!passwordValidater(password)) {
       alert(
-        "Password must contain at least 8 characters, 1 upp…e, 1 lowercase, 1 number, and 1 special character"
+        "Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character"
       );
-
       return;
     }
 
     axios
-      .post(`${baseURL}/user/register`, {
+      .post("/api/user/register", {
         username: username,
         email: email,
         password: password,
       })
       .then((res) => {
-        setCookie("email", email, { path: "/" });
-        setCookie("username", res.data.username, { path: "/" });
-        setCookie("userId", res.data.userId, { path: "/" });
-        setCookie("AuthToken", res.data.AuthToken, {path: "/"})
+        document.cookie = `email=${email}; path=/`;
+        document.cookie = `username=${res.data.username}; path=/`;
+        document.cookie = `userId=${res.data.userId}; path=/`;
+        document.cookie = `AuthToken=${res.data.AuthToken}; path=/`;
 
-        navigate("/");
+        router.push("/");
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -105,7 +100,7 @@ const SignUp = () => {
           </form>
 
           <p className="span">
-            Already have an account? <Link to="/login">Sign in instead</Link>
+            Already have an account? <Link href="/login">Sign in instead</Link>
           </p>
         </div>
       </div>

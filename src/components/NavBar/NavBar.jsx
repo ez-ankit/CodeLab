@@ -1,5 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -10,24 +13,19 @@ import "../../style/btn1.scss";
 import "../../style/btn2.scss";
 import style from "./NavBar.module.scss";
 
-const baseURL = "https://beneficial-coherent-butterfly.glitch.me/";
-// const baseURL = "http://localhost:8000";
-
 const NavBar = () => {
   const param = useParams();
   const boxRef = useRef(null);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
 
-  const isONEditorPage = null;
   const roomId = param.roomId;
-  const shareableLink = `https://codelab-live.netlify.app/editor/${roomId}`;
+  const shareableLink = typeof window !== "undefined" ? `${window.location.origin}/editor/${roomId}` : "";
 
   const createFile = () => {
     const roomId = uuidV4();
-    navigate(`/editor/${roomId}`);
+    router.push(`/editor/${roomId}`);
   };
 
   const toggleBoxVisibility = () => {
@@ -66,7 +64,7 @@ const NavBar = () => {
 
     if (token) {
       axios
-        .get(`${baseURL}/protected/isLoggedIn`, {
+        .get("/api/protected/isLoggedIn", {
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
@@ -89,7 +87,7 @@ const NavBar = () => {
     <>
       <div className={style.nav}>
         <div className={style.nav__menu}>
-          <Link to="/">
+          <Link href="/">
             <img src={images.logo_dark} alt="" />
           </Link>
           <div className={style.nav__list}>
@@ -167,7 +165,7 @@ const NavBar = () => {
               </div>
             )}
             {isLoggedIn ? (
-              <Link to="/dashboard" style={{ textDecoration: "none" }}>
+              <Link href="/dashboard" style={{ textDecoration: "none" }}>
                 <div className={style.dashboard}>
                   <div className="app__flex">
                     <svg
@@ -187,7 +185,7 @@ const NavBar = () => {
               </Link>
             ) : (
               <div className={style.signin}>
-                <Link to="/login">
+                <Link href="/login">
                   <span className="app__flex">
                     Sign in <img src={images.rightArrow} alt="" />
                   </span>

@@ -1,17 +1,14 @@
-import React from "react";
+"use client";
+
+import { useEffect } from "react";
 import axios from "axios";
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import "./Login.scss";
 
-const baseURL = "https://beneficial-coherent-butterfly.glitch.me/";
-// const baseURL = "http://localhost:8000";
-
 const Login = () => {
-  const [cookies, setCookie] = useCookies(["user"]);
-  const navigate = useNavigate();
-  document.title = "Login";
+  const router = useRouter();
 
   const login = (e) => {
     e.preventDefault();
@@ -21,25 +18,23 @@ const Login = () => {
 
     axios
       .post(
-        `${baseURL}/user/login`,
+        "/api/user/login",
         {
           email: email,
           password: password,
         },
       )
       .then((res) => {
-        console.log(res);
-        setCookie("email", email, { path: "/" });
-        setCookie("username", res.data.username, { path: "/" });
-        setCookie("userId", res.data.userId, { path: "/" });
-        setCookie("AuthToken", res.data.AuthToken, {path: "/"})
+        document.cookie = `email=${email}; path=/`;
+        document.cookie = `username=${res.data.username}; path=/`;
+        document.cookie = `userId=${res.data.userId}; path=/`;
+        document.cookie = `AuthToken=${res.data.AuthToken}; path=/`;
 
-        navigate("/");
+        router.push("/");
       })
       .catch((err) => {
-        console.log(err)
         if (err.request.status == 400) {
-          alert("Email or Passwrod Missing.");
+          alert("Email or Password Missing.");
         }
 
         if (err.request.status == 401) {
@@ -53,6 +48,10 @@ const Login = () => {
 
     e.target.reset();
   };
+
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
 
   return (
     <div className="login-container">
@@ -95,13 +94,13 @@ const Login = () => {
                 <input type="checkbox" />
                 <span>Remember me</span>
               </div>
-              <Link>Forget Password?</Link>
+              <span>Forget Password?</span>
             </div>
             <input className="submit-btn" type="submit" value="Login" />
           </form>
 
           <p className="span">
-            New on our platform? <Link to="/register">Create an account</Link>
+            New on our platform? <Link href="/register">Create an account</Link>
           </p>
         </div>
       </div>

@@ -1,38 +1,33 @@
 {
-  "name": "frontend",
+  "name": "codelab",
   "private": true,
-  "proxy": "http://localhost:8000",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "axios": "^1.6.8",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3",
     "monaco-editor": "^0.44.0",
+    "mongoose": "^8.24.0",
+    "next": "^14.2.0",
     "react": "^18.2.0",
-    "react-cookie": "^7.1.4",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
-    "react-monaco-editor": "^0.55.0",
-    "react-router-dom": "^6.22.3",
     "sass": "^1.72.0",
-    "scss": "^0.2.4",
+    "socket.io": "^4.8.3",
     "socket.io-client": "^4.7.5",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
-    "vite": "^5.2.0"
+    "eslint-config-next": "^14.2.0"
   }
 }
