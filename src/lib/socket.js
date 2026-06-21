@@ -20,6 +20,10 @@ export function setupSocketIO(server) {
           socketId: socket.id,
           username: username || "Unknown Client",
         });
+        socket.in(roomId).emit("user joined", {
+          username: username || "Unknown Client",
+          clients: roomsAndClientsmap[roomId].clients,
+        });
       } else {
         roomsAndClientsmap[roomId] = {
           code: "// your code...",
@@ -40,13 +44,20 @@ export function setupSocketIO(server) {
       socket.in(roomId).emit("code change", { newCode });
     });
 
+    socket.on("chat", ({ roomId, username, message }) => {
+      io.in(roomId).emit("chat", { username, message });
+    });
+
     socket.on("leave", (roomId) => {
       const clients = roomsAndClientsmap[roomId]?.clients;
       if (clients) {
         const index = clients.findIndex((cli) => cli.socketId == socket.id);
         const client = clients[index];
         if (index !== -1) clients.splice(index, 1);
-        socket.in(roomId).emit("disconnected", { username: client?.username });
+        socket.in(roomId).emit("disconnected", {
+          username: client?.username,
+          clients,
+        });
       }
       socket.leave();
     });

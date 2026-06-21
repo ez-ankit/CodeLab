@@ -7,6 +7,6 @@ const EditorLayout = dynamic(
   { ssr: false }
 );
 
-export default function EditorPage({ params }) {
-  return <EditorLayout roomId={params.roomId} />;
+export default function EditorPage({ params }: { params: { projectId: string } }) {
+  return <EditorLayout projectId={params.projectId} />;
 }

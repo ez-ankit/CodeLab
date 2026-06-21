@@ -1,23 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300..900&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300..900&display=swap');
 
+* {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+}
 
-:root {
-  font-family: "Outfit", sans-serif;
-  --primary-color: #f8f7fa;
-  --white-color: #ffffff;
-  --blue-color: #7367f0;
-  --dark-blue-color: #675cd8;
-
+html, body {
+  font-family: "DM Sans", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-shadow: none;
+/* ── Light theme (default) ── */
+[data-theme="light"] {
+  --bg-primary: #fefaf3;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #fcf8f2;
+  --bg-elevated: #ffffff;
+  --bg-input: #ffffff;
+
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+
+  --border-color: #e5e7eb;
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-hover: #d1d5db;
+
+  --brand: #5f5fff;
+  --brand-hover: #4a4ad4;
+  --brand-light: #eeedff;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.08);
+
+  --scrollbar-thumb: #d1d5db;
+  --scrollbar-track: transparent;
+
+  color-scheme: light;
+}
+
+/* ── Dark theme ── */
+[data-theme="dark"] {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252526;
+  --bg-tertiary: #2d2d2d;
+  --bg-elevated: #333333;
+  --bg-input: #1e1e1e;
+
+  --text-primary: #cccccc;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+
+  --border-color: #2d2d2d;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-hover: #3d3d3d;
+
+  --brand: #5f5fff;
+  --brand-hover: #6b6bff;
+  --brand-light: rgba(95, 95, 255, 0.15);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.3);
+
+  --scrollbar-thumb: #3d3d3d;
+  --scrollbar-track: transparent;
+
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: var(--brand-light);
+  color: var(--text-primary);
 }
 
 .app__flex{

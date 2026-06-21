@@ -2,39 +2,38 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { v4 as uuidV4 } from "uuid";
+import { useParams } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 import notify from "../../services/toast";
 import { images } from "../../constant";
-import "../../style/btn1.scss";
-import "../../style/btn2.scss";
+import { useTheme } from "../../context/ThemeContext";
 import style from "./NavBar.module.scss";
 
 const NavBar = () => {
-  const param = useParams();
-  const boxRef = useRef(null);
-  const router = useRouter();
+  const params = useParams() as { projectId?: string; roomId?: string };
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [username, setUsername] = useState("");
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
-  const roomId = param.roomId;
-  const shareableLink = typeof window !== "undefined" ? `${window.location.origin}/editor/${roomId}` : "";
+  const projectId = params?.projectId || params?.roomId;
+  const shareableLink =
+    typeof window !== "undefined" && projectId
+      ? `${window.location.origin}/editor/${projectId}`
+      : "";
 
-  const createFile = () => {
-    const roomId = uuidV4();
-    router.push(`/editor/${roomId}`);
-  };
+  const initial = username ? username.charAt(0).toUpperCase() : "?";
 
   const toggleBoxVisibility = () => {
     setIsBoxVisible(!isBoxVisible);
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (boxRef.current && !boxRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (boxRef.current && !boxRef.current.contains(event.target as Node)) {
         setIsBoxVisible(false);
       }
     };
@@ -52,17 +51,16 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    const bearer = document.cookie
-      .split("; ")
-      .filter((item) => item.includes("AuthToken"));
+    const cookies = document.cookie.split("; ");
+    const tokenCookie = cookies.find((c) => c.startsWith("AuthToken="));
+    const userCookie = cookies.find((c) => c.startsWith("username="));
 
-    var token = null;
-
-    if(bearer.length > 0){
-      token = bearer[0].split("=")[1];
+    if (userCookie) {
+      setUsername(decodeURIComponent(userCookie.split("=")[1]));
     }
 
-    if (token) {
+    if (tokenCookie) {
+      const token = tokenCookie.split("=")[1];
       axios
         .get("/api/protected/isLoggedIn", {
           headers: {
@@ -75,10 +73,8 @@ const NavBar = () => {
             setLoggedIn(true);
           }
         })
-        .catch((err) => {
-          if (err && err.response && err.response.status === 401) {
-            setLoggedIn(false);
-          }
+        .catch(() => {
+          setLoggedIn(false);
         });
     }
   }, []);
@@ -88,12 +84,12 @@ const NavBar = () => {
       <div className={style.nav}>
         <div className={style.nav__menu}>
           <Link href="/">
-            <img src={images.logo_dark} alt="" />
+            <img src={images.logo_dark.src} alt="CodeLab" />
           </Link>
           <div className={style.nav__list}>
-            {roomId ? (
+            {projectId ? (
               <div className={style.share} onClick={toggleBoxVisibility}>
-                <div className={`${style.img} app__flex btn-1`}>
+                <div className={`${style.img}`}>
                   <svg
                     fill="none"
                     height="24"
@@ -122,7 +118,7 @@ const NavBar = () => {
                     <p>Share this link with other people:</p>
                     <div>
                       <input type="text" value={shareableLink} readOnly />
-                      <span className="app__flex" onClick={copyLinkHandler}>
+                      <span onClick={copyLinkHandler}>
                         <svg
                           viewBox="0 0 256 256"
                           xmlns="http://www.w3.org/2000/svg"
@@ -143,50 +139,45 @@ const NavBar = () => {
                   </div>
                 )}
               </div>
-            ) : (
-              <div className={style.new_file} onClick={() => createFile()}>
-                <div className="app__flex btn-2">
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fas"
-                    data-icon="plus"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
-                    ></path>
-                  </svg>
-                  <span>New file</span>
-                </div>
-              </div>
-            )}
+            ) : null}
+
+            <button
+              className={style.themeToggle}
+              onClick={toggleTheme}
+              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+              title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            >
+              {theme === "light" ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              )}
+            </button>
+
             {isLoggedIn ? (
-              <Link href="/dashboard" style={{ textDecoration: "none" }}>
-                <div className={style.dashboard}>
-                  <div className="app__flex">
-                    <svg
-                      height="24"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M4 13h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1zm-1 7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v4zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v7zm1-10h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1z"
-                      />
-                    </svg>
-                    <span>Dashboard</span>
+              <div className={style.profile}>
+                <Link href="/profile">
+                  <div className={style.avatar}>
+                    {initial}
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ) : (
               <div className={style.signin}>
                 <Link href="/login">
-                  <span className="app__flex">
+                  <span>
                     Sign in <img src={images.rightArrow} alt="" />
                   </span>
                 </Link>
@@ -195,7 +186,15 @@ const NavBar = () => {
           </div>
         </div>
       </div>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            backgroundColor: "var(--brand)",
+            color: "white",
+            width: "250px",
+          },
+        }}
+      />
     </>
   );
 };

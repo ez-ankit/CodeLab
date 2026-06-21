@@ -30,7 +30,7 @@ const Login = () => {
         document.cookie = `userId=${res.data.userId}; path=/`;
         document.cookie = `AuthToken=${res.data.AuthToken}; path=/`;
 
-        router.push("/");
+        router.push("/dashboard");
       })
       .catch((err) => {
         if (err.request.status == 400) {

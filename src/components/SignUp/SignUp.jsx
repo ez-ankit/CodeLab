@@ -41,7 +41,7 @@ const SignUp = () => {
         document.cookie = `userId=${res.data.userId}; path=/`;
         document.cookie = `AuthToken=${res.data.AuthToken}; path=/`;
 
-        router.push("/");
+        router.push("/dashboard");
       })
       .catch((error) => {
         alert(error.response.data.message);

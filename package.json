@@ -27,7 +27,11 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/uuid": "^10.0.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.0"
+    "eslint-config-next": "^14.2.0",
+    "typescript": "^6.0.3"
   }
 }

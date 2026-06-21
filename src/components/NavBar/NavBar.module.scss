@@ -1,157 +1,242 @@
 .nav{
   width: 100%;
-  background-color: #fefaf3;
+  background: var(--bg-primary);
   z-index: 5;
-
-  padding: 10px 20px;
+  padding: 10px 24px;
   position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s ease, border-color 0.2s ease;
 
   .nav__menu{
     height: 50px;
-    width: calc(100% - 40px);
-
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;
 
-    img{
-      width: 120px;
+    > a {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+
+      img{
+        width: 120px;
+        display: block;
+      }
     }
   }
 
   .nav__list{
-    width: 20%;
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
 
     .new_file{
+      a {
+        text-decoration: none;
+      }
+
       div{
-        width: 120px;
-        padding: 5px 10px 5px 0px;
-        position: relative;
-        will-change: transform;
-        transform: translateY(0);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px 6px 10px;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 600;
         transition: transform 150ms, box-shadow 150ms;
+        white-space: nowrap;
+        color: var(--brand);
+        border: 2px solid var(--brand);
+        border-radius: 50px;
 
         svg{
-          padding: 5px 10px;
-          width: 15px;
+          width: 14px;
+          height: 14px;
+          flex-shrink: 0;
         }
 
         &:hover{
-          transform: translateY(-2px);
+          transform: translateY(-1px);
         }
 
         &:active{
-          box-shadow: none;
           transform: translateY(0);
         }
       }
     }
 
     .share{
+      position: relative;
+
       .img{
-        width: 120px;
-        padding: 5px 10px 5px 0px;
-        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px 6px 10px;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: 500;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        color: var(--brand);
+        border: 2px solid var(--brand);
+        border-radius: 50px;
+        transition: transform 150ms, box-shadow 150ms;
 
         svg{
-          padding: 5px;
-          width: 23px;
+          width: 18px;
+          flex-shrink: 0;
+        }
+
+        &:hover{
+          transform: translateY(-1px);
+        }
+
+        &:active{
+          transform: translateY(0);
         }
       }
 
       .shareNav{
         position: absolute;
-        width: 350px;
-        height: fit-content;
-        right: 8%;
-        margin-top: 10px;
-        padding: 30px;
+        width: 360px;
+        right: 0;
+        top: calc(100% + 8px);
+        padding: 24px;
         border-radius: 10px;
-        background-color: white;
-        box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-md);
+        z-index: 10;
+
+        p{
+          font-size: 14px;
+          color: var(--text-secondary);
+          margin: 0 0 12px;
+        }
 
         div{
           display: flex;
-          justify-content: space-between;
+          gap: 8px;
           align-items: center;
-          margin: 10px 0px;
 
           input{
-            padding: 10px;
-            border-radius: 5px;
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
             outline: none;
-            font-size: 14px;
-            border: 1px solid gray;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            min-width: 0;
           }
 
           span{
+            display: flex;
+            align-items: center;
+            gap: 4px;
             color: white;
-            padding: 3px 15px 5px 10px;
-            border-radius: 25px;
-            background-color: #5f5fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background-color: var(--brand);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            flex-shrink: 0;
 
             svg{
-              height: 20px;
-              width: 20px;
-              margin: 5px;
+              width: 16px;
+              height: 16px;
             }
 
             &:active{
-              transform: scale(0.95);
+              transform: scale(0.96);
             }
           }
         }
       }
     }
 
-    .dashboard{
-      color: white;
-      border-radius: 10px;
-      background-color: #5f5fff;
+    .themeToggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+      flex-shrink: 0;
 
-      div{
-        width: 120px;
-        padding: 5px 10px 5px 0px;
-        position: relative;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-
-        svg{
-          padding: 5px;
-          width: 24px;
-        }
+      svg {
+        width: 18px;
+        height: 18px;
       }
 
-      &:active{
-        box-shadow: none;
-        transform: scale(0.95)
+      &:hover {
+        border-color: var(--brand);
+        color: var(--brand);
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+
+    .profile{
+      a{
+        text-decoration: none;
+      }
+
+      .avatar{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background-color: var(--brand);
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 150ms;
+
+        &:hover{
+          transform: scale(1.05);
+        }
+
+        &:active{
+          transform: scale(0.96);
+        }
       }
     }
 
     .signin{
-
       a{
         text-decoration: none;
-        color: black;
+        color: var(--text-secondary);
         white-space: nowrap;
 
         span{
-          font-size: 17px;
+          font-size: 15px;
+          font-weight: 500;
           cursor: pointer;
-  
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
           img{
-            padding: 5px 10px;
-            width: 20px;
+            width: 16px;
           }
         }
       }
